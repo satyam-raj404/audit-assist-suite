@@ -5,15 +5,8 @@ import { FileUpload } from "./FileUpload";
 import { AuditTypeSelector } from "./AuditTypeSelector";
 import { TemplateSelector } from "./TemplateSelector";
 import { OutputFolderSelector } from "./OutputFolderSelector";
-import { ReconciliationSection } from "./ReconciliationSection";
 import { AuditProgress, type AuditStep } from "./AuditProgress";
 import { toast } from "sonner";
-
-interface ReconciliationFile {
-  id: string;
-  name: string;
-  size: number;
-}
 
 interface UploadedFile {
   id: string;
@@ -43,13 +36,6 @@ export function AuditPanel({ onStatusChange }: AuditPanelProps) {
   const [isRunning, setIsRunning] = useState(false);
   const [progress, setProgress] = useState(0);
   const [steps, setSteps] = useState<AuditStep[]>(initialSteps);
-  const [reconFile1, setReconFile1] = useState<ReconciliationFile | null>(null);
-  const [reconFile2, setReconFile2] = useState<ReconciliationFile | null>(null);
-
-  const handleReconciliationFilesChange = (file1: ReconciliationFile | null, file2: ReconciliationFile | null) => {
-    setReconFile1(file1);
-    setReconFile2(file2);
-  };
 
   const canRunAudit = files.length > 0 && auditType && subAuditSector && selectedTemplate && outputPath;
 
@@ -62,14 +48,12 @@ export function AuditPanel({ onStatusChange }: AuditPanelProps) {
     const stepDurations = [800, 1200, 2000, 1500, 600];
 
     for (let i = 0; i < steps.length; i++) {
-      // Set current step to running
       setSteps((prev) =>
         prev.map((s, idx) =>
           idx === i ? { ...s, status: "running" } : s
         )
       );
 
-      // Simulate progress
       const startProgress = (i / steps.length) * 100;
       const endProgress = ((i + 1) / steps.length) * 100;
       const duration = stepDurations[i];
@@ -82,7 +66,6 @@ export function AuditPanel({ onStatusChange }: AuditPanelProps) {
         setProgress((prev) => Math.min(prev + progressIncrement, endProgress));
       }
 
-      // Mark step as complete
       setSteps((prev) =>
         prev.map((s, idx) =>
           idx === i ? { ...s, status: "complete" } : s
@@ -112,8 +95,6 @@ export function AuditPanel({ onStatusChange }: AuditPanelProps) {
     setOutputPath("");
     setProgress(0);
     setSteps(initialSteps);
-    setReconFile1(null);
-    setReconFile2(null);
     onStatusChange("idle", "Ready to run audit");
   };
 
@@ -132,10 +113,6 @@ export function AuditPanel({ onStatusChange }: AuditPanelProps) {
             }}
             onSubAuditSectorChange={setSubAuditSector}
           />
-        </div>
-
-        <div className="border-t border-border pt-6">
-          <ReconciliationSection onFilesChange={handleReconciliationFilesChange} />
         </div>
 
         <div className="border-t border-border pt-6">
@@ -171,7 +148,7 @@ export function AuditPanel({ onStatusChange }: AuditPanelProps) {
           {isRunning ? (
             <Button variant="destructive" onClick={handleStop}>
               <Square className="h-4 w-4 mr-2" />
-              Stop Audit
+              Stop
             </Button>
           ) : (
             <Button

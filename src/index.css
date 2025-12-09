@@ -4,38 +4,38 @@
 
 @layer base {
   :root {
-    /* KPMG Brand Colors */
+    /* Dark Theme - KPMG Brand */
     --kpmg-blue: 222 100% 28%;
     --kpmg-secondary: 210 100% 36%;
     --kpmg-accent: 199 100% 43%;
     
-    --background: 210 20% 98%;
-    --foreground: 222 47% 11%;
+    --background: 222 47% 6%;
+    --foreground: 210 40% 96%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 222 47% 11%;
+    --card: 222 47% 9%;
+    --card-foreground: 210 40% 96%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 222 47% 11%;
+    --popover: 222 47% 9%;
+    --popover-foreground: 210 40% 96%;
 
-    --primary: 222 100% 28%;
+    --primary: 199 100% 43%;
     --primary-foreground: 0 0% 100%;
 
     --secondary: 210 100% 36%;
     --secondary-foreground: 0 0% 100%;
 
-    --muted: 210 20% 94%;
-    --muted-foreground: 215 16% 47%;
+    --muted: 222 30% 14%;
+    --muted-foreground: 215 20% 60%;
 
     --accent: 199 100% 43%;
     --accent-foreground: 0 0% 100%;
 
-    --destructive: 0 84% 60%;
+    --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 214 32% 85%;
-    --input: 214 32% 91%;
-    --ring: 222 100% 28%;
+    --border: 222 30% 18%;
+    --input: 222 30% 18%;
+    --ring: 199 100% 43%;
 
     --radius: 4px;
 
@@ -47,44 +47,14 @@
     --info: 199 100% 43%;
     --info-foreground: 0 0% 100%;
 
-    --sidebar-background: 222 100% 28%;
-    --sidebar-foreground: 0 0% 100%;
-    --sidebar-primary: 0 0% 100%;
-    --sidebar-primary-foreground: 222 100% 28%;
-    --sidebar-accent: 210 100% 36%;
-    --sidebar-accent-foreground: 0 0% 100%;
-    --sidebar-border: 222 80% 35%;
+    --sidebar-background: 222 47% 8%;
+    --sidebar-foreground: 210 40% 90%;
+    --sidebar-primary: 199 100% 43%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 222 30% 14%;
+    --sidebar-accent-foreground: 210 40% 96%;
+    --sidebar-border: 222 30% 15%;
     --sidebar-ring: 199 100% 43%;
-  }
-
-  .dark {
-    --background: 222 47% 8%;
-    --foreground: 210 40% 98%;
-
-    --card: 222 47% 11%;
-    --card-foreground: 210 40% 98%;
-
-    --popover: 222 47% 11%;
-    --popover-foreground: 210 40% 98%;
-
-    --primary: 199 100% 43%;
-    --primary-foreground: 0 0% 100%;
-
-    --secondary: 210 100% 36%;
-    --secondary-foreground: 0 0% 100%;
-
-    --muted: 217 33% 17%;
-    --muted-foreground: 215 20% 65%;
-
-    --accent: 199 100% 43%;
-    --accent-foreground: 0 0% 100%;
-
-    --destructive: 0 63% 31%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 217 33% 17%;
-    --input: 217 33% 17%;
-    --ring: 199 100% 43%;
   }
 }
 
@@ -115,7 +85,7 @@
   }
 
   .kpmg-section-title {
-    @apply text-sm font-semibold uppercase tracking-wide text-muted-foreground mb-3;
+    @apply text-sm font-semibold uppercase tracking-wide text-accent mb-3;
   }
 
   .status-indicator {
@@ -131,11 +101,11 @@
   }
 
   .status-success {
-    @apply bg-emerald-100 text-emerald-700;
+    @apply bg-emerald-900/50 text-emerald-400;
   }
 
   .status-error {
-    @apply bg-red-100 text-red-700;
+    @apply bg-red-900/50 text-red-400;
   }
 }
 
