@@ -3,9 +3,8 @@ import {
   LayoutDashboard,
   Upload,
   FileText,
-  Settings,
-  History,
   FolderOpen,
+  ArrowLeftRight,
 } from "lucide-react";
 
 interface SidebarItem {
@@ -17,10 +16,9 @@ interface SidebarItem {
 const sidebarItems: SidebarItem[] = [
   { icon: LayoutDashboard, label: "Dashboard", active: true },
   { icon: Upload, label: "Upload Files" },
+  { icon: ArrowLeftRight, label: "Reconciliation" },
   { icon: FileText, label: "Templates" },
-  { icon: History, label: "Audit History" },
   { icon: FolderOpen, label: "Output Files" },
-  { icon: Settings, label: "Settings" },
 ];
 
 export function Sidebar() {
