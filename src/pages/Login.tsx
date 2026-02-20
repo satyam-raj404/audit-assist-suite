@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
+import { ParticleBackground } from "@/components/particles/ParticleBackground";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -30,10 +31,7 @@ const Login = () => {
     setIsLoading(true);
 
     try {
-      // TODO: Replace with actual API call
-      // const response = await api.login({ email, password });
       await new Promise((resolve) => setTimeout(resolve, 1000));
-
       toast({
         title: "Login Successful",
         description: "Welcome back!",
@@ -51,12 +49,14 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center p-4">
-      <div className="w-full max-w-md space-y-6">
+    <div className="min-h-screen bg-background flex items-center justify-center p-4 relative overflow-hidden">
+      <ParticleBackground />
+
+      <div className="w-full max-w-md space-y-6 relative z-10">
         {/* Logo / Branding */}
         <div className="flex flex-col items-center gap-3">
-          <div className="w-14 h-14 bg-accent rounded-lg flex items-center justify-center">
-            <span className="text-accent-foreground font-bold text-2xl">K</span>
+          <div className="w-14 h-14 bg-primary rounded-lg flex items-center justify-center shadow-lg">
+            <span className="text-primary-foreground font-bold text-2xl">K</span>
           </div>
           <div className="text-center">
             <h1 className="text-2xl font-bold text-foreground tracking-tight">KPMG</h1>
@@ -67,7 +67,7 @@ const Login = () => {
         </div>
 
         {/* Login Card */}
-        <Card className="border-border shadow-lg">
+        <Card className="border-border shadow-lg backdrop-blur-sm bg-card/95">
           <CardHeader className="space-y-1">
             <CardTitle className="text-xl">Sign in</CardTitle>
             <CardDescription>

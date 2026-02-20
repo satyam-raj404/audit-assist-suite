@@ -4,38 +4,38 @@
 
 @layer base {
   :root {
-    /* Dark Theme - KPMG Brand */
+    /* Light Theme - KPMG Brand */
     --kpmg-blue: 222 100% 28%;
     --kpmg-secondary: 210 100% 36%;
     --kpmg-accent: 199 100% 43%;
     
-    --background: 222 47% 6%;
-    --foreground: 210 40% 96%;
+    --background: 0 0% 98%;
+    --foreground: 222 47% 11%;
 
-    --card: 222 47% 9%;
-    --card-foreground: 210 40% 96%;
+    --card: 0 0% 100%;
+    --card-foreground: 222 47% 11%;
 
-    --popover: 222 47% 9%;
-    --popover-foreground: 210 40% 96%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 47% 11%;
 
-    --primary: 199 100% 43%;
+    --primary: 222 100% 28%;
     --primary-foreground: 0 0% 100%;
 
     --secondary: 210 100% 36%;
     --secondary-foreground: 0 0% 100%;
 
-    --muted: 222 30% 14%;
-    --muted-foreground: 215 20% 60%;
+    --muted: 210 20% 94%;
+    --muted-foreground: 215 16% 47%;
 
-    --accent: 199 100% 43%;
+    --accent: 222 100% 28%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 222 30% 18%;
-    --input: 222 30% 18%;
-    --ring: 199 100% 43%;
+    --border: 214 20% 84%;
+    --input: 214 20% 84%;
+    --ring: 222 100% 28%;
 
     --radius: 4px;
 
@@ -47,14 +47,14 @@
     --info: 199 100% 43%;
     --info-foreground: 0 0% 100%;
 
-    --sidebar-background: 222 47% 8%;
-    --sidebar-foreground: 210 40% 90%;
-    --sidebar-primary: 199 100% 43%;
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 222 47% 11%;
+    --sidebar-primary: 222 100% 28%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 222 30% 14%;
-    --sidebar-accent-foreground: 210 40% 96%;
-    --sidebar-border: 222 30% 15%;
-    --sidebar-ring: 199 100% 43%;
+    --sidebar-accent: 210 20% 94%;
+    --sidebar-accent-foreground: 222 47% 11%;
+    --sidebar-border: 214 20% 88%;
+    --sidebar-ring: 222 100% 28%;
   }
 }
 
@@ -85,7 +85,7 @@
   }
 
   .kpmg-section-title {
-    @apply text-sm font-semibold uppercase tracking-wide text-accent mb-3;
+    @apply text-sm font-semibold uppercase tracking-wide text-primary mb-3;
   }
 
   .status-indicator {
@@ -97,15 +97,15 @@
   }
 
   .status-running {
-    @apply bg-accent/20 text-accent;
+    @apply bg-primary/10 text-primary;
   }
 
   .status-success {
-    @apply bg-emerald-900/50 text-emerald-400;
+    @apply bg-emerald-50 text-emerald-700;
   }
 
   .status-error {
-    @apply bg-red-900/50 text-red-400;
+    @apply bg-red-50 text-red-700;
   }
 }
 
