@@ -33,32 +33,25 @@ export function Sidebar({ activeView, onViewChange, isFS }: SidebarProps) {
     <aside className="w-48 bg-card shrink-0 flex flex-col border-r border-border">
       <nav className="flex-1 py-4">
         <ul className="space-y-1 px-2">
-          {sidebarItems.map((item) => {
-            const disabled = item.requiresFS && !isFS;
-            return (
+        {sidebarItems
+          .filter((item) => !(item.requiresFS && !isFS))
+          .map((item) => (
               <li key={item.id}>
                 <button
-                  onClick={() => !disabled && onViewChange(item.id)}
-                  disabled={disabled}
+                  onClick={() => onViewChange(item.id)}
                   className={cn(
                     "w-full flex items-center gap-3 px-3 py-2.5 rounded text-sm transition-colors",
                     "focus:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-                    disabled
-                      ? "opacity-40 cursor-not-allowed text-muted-foreground"
-                      : activeView === item.id
-                        ? "bg-primary/10 text-primary font-medium"
-                        : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                    activeView === item.id
+                      ? "bg-primary/10 text-primary font-medium"
+                      : "text-muted-foreground hover:bg-muted hover:text-foreground"
                   )}
                 >
                   <item.icon className="h-4 w-4" />
                   <span>{item.label}</span>
-                  {disabled && (
-                    <span className="ml-auto text-[10px] bg-muted px-1.5 py-0.5 rounded text-muted-foreground">FS only</span>
-                  )}
                 </button>
               </li>
-            );
-          })}
+            ))}
         </ul>
       </nav>
 

@@ -38,6 +38,13 @@ const Index = () => {
   const [activeView, setActiveView] = useState("dashboard");
   const [isFS, setIsFS] = useState(true);
 
+  const handleFSChange = (checked: boolean) => {
+    setIsFS(checked);
+    if (!checked && activeView === "reconciliation") {
+      setActiveView("dashboard");
+    }
+  };
+
   const handleStatusChange = (newStatus: AppStatus, message: string) => {
     setStatus(newStatus);
     setStatusMessage(message);
@@ -80,7 +87,7 @@ const Index = () => {
                 <Switch
                   id="fs-switch"
                   checked={isFS}
-                  onCheckedChange={setIsFS}
+                  onCheckedChange={handleFSChange}
                 />
                 <Label
                   htmlFor="fs-switch"
