@@ -6,6 +6,7 @@ import { AuditTypeSelector } from "./AuditTypeSelector";
 import { TemplateSelector } from "./TemplateSelector";
 import { OutputFolderSelector } from "./OutputFolderSelector";
 import { AuditProgress, type AuditStep } from "./AuditProgress";
+import { WorkflowIllustration } from "./WorkflowIllustration";
 import { toast } from "sonner";
 
 interface UploadedFile {
@@ -101,7 +102,8 @@ export function AuditPanel({ onStatusChange }: AuditPanelProps) {
   return (
     <div className="h-full flex flex-col">
       <div className="flex-1 overflow-y-auto p-6 space-y-6">
-        <FileUpload onFilesChange={setFiles} />
+        {/* Workflow Illustration */}
+        <WorkflowIllustration />
 
         <div className="border-t border-border pt-6">
           <AuditTypeSelector
@@ -120,6 +122,11 @@ export function AuditPanel({ onStatusChange }: AuditPanelProps) {
             selectedTemplate={selectedTemplate}
             onTemplateChange={setSelectedTemplate}
           />
+        </div>
+
+        {/* Upload Files moved AFTER Select Template */}
+        <div className="border-t border-border pt-6">
+          <FileUpload onFilesChange={setFiles} />
         </div>
 
         <div className="border-t border-border pt-6">

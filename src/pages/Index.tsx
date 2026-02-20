@@ -4,6 +4,8 @@ import { Sidebar } from "@/components/layout/Sidebar";
 import { StatusBar } from "@/components/layout/StatusBar";
 import { AuditPanel } from "@/components/audit/AuditPanel";
 import { ReconciliationPanel } from "@/components/reconciliation/ReconciliationPanel";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
 
 type AppStatus = "idle" | "running" | "success" | "error";
 
@@ -34,6 +36,7 @@ const Index = () => {
   const [status, setStatus] = useState<AppStatus>("idle");
   const [statusMessage, setStatusMessage] = useState("Ready");
   const [activeView, setActiveView] = useState("dashboard");
+  const [isFS, setIsFS] = useState(true);
 
   const handleStatusChange = (newStatus: AppStatus, message: string) => {
     setStatus(newStatus);
@@ -48,21 +51,44 @@ const Index = () => {
   const currentView = viewTitles[activeView] || viewTitles.dashboard;
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center p-4">
-      <div className="kpmg-container rounded-lg overflow-hidden flex flex-col border border-border">
+    <div className="min-h-screen bg-muted flex items-center justify-center p-4">
+      <div className="kpmg-container rounded-lg overflow-hidden flex flex-col border border-border bg-background">
         <TopNavbar />
 
         <div className="flex flex-1 overflow-hidden">
-          <Sidebar activeView={activeView} onViewChange={setActiveView} />
+          <Sidebar activeView={activeView} onViewChange={setActiveView} isFS={isFS} />
 
           <main className="flex-1 bg-background overflow-hidden flex flex-col">
-            <div className="p-6 border-b border-border">
-              <h1 className="text-xl font-semibold text-foreground">
-                {currentView.title}
-              </h1>
-              <p className="text-sm text-muted-foreground mt-1">
-                {currentView.description}
-              </p>
+            <div className="p-6 border-b border-border flex items-center justify-between">
+              <div>
+                <h1 className="text-xl font-semibold text-foreground">
+                  {currentView.title}
+                </h1>
+                <p className="text-sm text-muted-foreground mt-1">
+                  {currentView.description}
+                </p>
+              </div>
+
+              {/* FS / Non-FS Switch */}
+              <div className="flex items-center gap-3 bg-muted rounded-lg px-4 py-2">
+                <Label
+                  htmlFor="fs-switch"
+                  className={`text-sm font-semibold transition-colors ${!isFS ? "text-foreground" : "text-muted-foreground"}`}
+                >
+                  Non-FS
+                </Label>
+                <Switch
+                  id="fs-switch"
+                  checked={isFS}
+                  onCheckedChange={setIsFS}
+                />
+                <Label
+                  htmlFor="fs-switch"
+                  className={`text-sm font-semibold transition-colors ${isFS ? "text-primary" : "text-muted-foreground"}`}
+                >
+                  FS
+                </Label>
+              </div>
             </div>
 
             <div className="flex-1 overflow-hidden">

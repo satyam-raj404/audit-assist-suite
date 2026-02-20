@@ -11,12 +11,13 @@ interface SidebarItem {
   icon: React.ElementType;
   label: string;
   id: string;
+  requiresFS?: boolean;
 }
 
 const sidebarItems: SidebarItem[] = [
   { icon: LayoutDashboard, label: "Dashboard", id: "dashboard" },
   { icon: Upload, label: "Upload Files", id: "upload" },
-  { icon: ArrowLeftRight, label: "Reconciliation", id: "reconciliation" },
+  { icon: ArrowLeftRight, label: "Reconciliation", id: "reconciliation", requiresFS: true },
   { icon: FileText, label: "Templates", id: "templates" },
   { icon: FolderOpen, label: "Output Files", id: "output" },
 ];
@@ -24,35 +25,45 @@ const sidebarItems: SidebarItem[] = [
 interface SidebarProps {
   activeView: string;
   onViewChange: (view: string) => void;
+  isFS: boolean;
 }
 
-export function Sidebar({ activeView, onViewChange }: SidebarProps) {
+export function Sidebar({ activeView, onViewChange, isFS }: SidebarProps) {
   return (
-    <aside className="w-48 bg-sidebar shrink-0 flex flex-col border-r border-sidebar-border">
+    <aside className="w-48 bg-card shrink-0 flex flex-col border-r border-border">
       <nav className="flex-1 py-4">
         <ul className="space-y-1 px-2">
-          {sidebarItems.map((item) => (
-            <li key={item.id}>
-              <button
-                onClick={() => onViewChange(item.id)}
-                className={cn(
-                  "w-full flex items-center gap-3 px-3 py-2.5 rounded text-sm transition-colors",
-                  "focus:outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring",
-                  activeView === item.id
-                    ? "bg-sidebar-accent text-accent"
-                    : "text-sidebar-foreground/70 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground"
-                )}
-              >
-                <item.icon className="h-4 w-4" />
-                <span>{item.label}</span>
-              </button>
-            </li>
-          ))}
+          {sidebarItems.map((item) => {
+            const disabled = item.requiresFS && !isFS;
+            return (
+              <li key={item.id}>
+                <button
+                  onClick={() => !disabled && onViewChange(item.id)}
+                  disabled={disabled}
+                  className={cn(
+                    "w-full flex items-center gap-3 px-3 py-2.5 rounded text-sm transition-colors",
+                    "focus:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                    disabled
+                      ? "opacity-40 cursor-not-allowed text-muted-foreground"
+                      : activeView === item.id
+                        ? "bg-primary/10 text-primary font-medium"
+                        : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                  )}
+                >
+                  <item.icon className="h-4 w-4" />
+                  <span>{item.label}</span>
+                  {disabled && (
+                    <span className="ml-auto text-[10px] bg-muted px-1.5 py-0.5 rounded text-muted-foreground">FS only</span>
+                  )}
+                </button>
+              </li>
+            );
+          })}
         </ul>
       </nav>
 
-      <div className="p-4 border-t border-sidebar-border">
-        <p className="text-xs text-sidebar-foreground/50">Version 1.0.0</p>
+      <div className="p-4 border-t border-border">
+        <p className="text-xs text-muted-foreground">Version 1.0.0</p>
       </div>
     </aside>
   );
