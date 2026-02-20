@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { AuditTypeSelector } from "@/components/audit/AuditTypeSelector";
 import { ReconciliationFileSlot } from "./ReconciliationFileSlot";
 import { ReconciliationResults } from "./ReconciliationResults";
+import { ProcessingDialog } from "@/components/shared/ProcessingDialog";
 
 interface ReconciliationFile {
   id: string;
@@ -25,6 +26,7 @@ export function ReconciliationPanel({ onStatusChange }: ReconciliationPanelProps
   const [subAuditSector, setSubAuditSector] = useState("");
   const [isRunning, setIsRunning] = useState(false);
   const [progress, setProgress] = useState(0);
+  const [showProcessing, setShowProcessing] = useState(false);
   const [results, setResults] = useState<null | { matched: number; mismatched: number; missing: number }>(null);
 
   const handleFileUpload = useCallback(
@@ -176,7 +178,7 @@ export function ReconciliationPanel({ onStatusChange }: ReconciliationPanelProps
           )}
           <Button
             variant="kpmg"
-            onClick={runReconciliation}
+            onClick={() => setShowProcessing(true)}
             disabled={!canRun}
           >
             <Play className="h-4 w-4 mr-2" />
@@ -184,6 +186,30 @@ export function ReconciliationPanel({ onStatusChange }: ReconciliationPanelProps
           </Button>
         </div>
       </div>
+
+      <ProcessingDialog
+        open={showProcessing}
+        onOpenChange={setShowProcessing}
+        onComplete={(success) => {
+          if (success) {
+            const simulatedResults = {
+              matched: Math.floor(Math.random() * 500) + 200,
+              mismatched: Math.floor(Math.random() * 50) + 10,
+              missing: Math.floor(Math.random() * 20) + 5,
+            };
+            setResults(simulatedResults);
+            setProgress(100);
+            onStatusChange("success", "Reconciliation completed");
+            toast.success("Reconciliation Complete", {
+              description: `Found ${simulatedResults.mismatched} discrepancies`,
+            });
+          } else {
+            onStatusChange("error", "Reconciliation failed");
+            toast.error("Reconciliation Failed", { description: "An error occurred during processing." });
+          }
+        }}
+        title="Running Reconciliation"
+      />
     </div>
   );
 }

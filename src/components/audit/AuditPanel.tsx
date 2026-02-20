@@ -7,6 +7,7 @@ import { TemplateSelector } from "./TemplateSelector";
 import { OutputFolderSelector } from "./OutputFolderSelector";
 import { AuditProgress, type AuditStep } from "./AuditProgress";
 import { WorkflowIllustration } from "./WorkflowIllustration";
+import { ProcessingDialog } from "@/components/shared/ProcessingDialog";
 import { toast } from "sonner";
 
 interface UploadedFile {
@@ -37,6 +38,7 @@ export function AuditPanel({ onStatusChange }: AuditPanelProps) {
   const [isRunning, setIsRunning] = useState(false);
   const [progress, setProgress] = useState(0);
   const [steps, setSteps] = useState<AuditStep[]>(initialSteps);
+  const [showProcessing, setShowProcessing] = useState(false);
 
   const canRunAudit = files.length > 0 && auditType && subAuditSector && selectedTemplate && outputPath;
 
@@ -160,7 +162,7 @@ export function AuditPanel({ onStatusChange }: AuditPanelProps) {
           ) : (
             <Button
               variant="kpmg"
-              onClick={simulateAudit}
+              onClick={() => setShowProcessing(true)}
               disabled={!canRunAudit}
             >
               <Play className="h-4 w-4 mr-2" />
@@ -169,6 +171,21 @@ export function AuditPanel({ onStatusChange }: AuditPanelProps) {
           )}
         </div>
       </div>
+
+      <ProcessingDialog
+        open={showProcessing}
+        onOpenChange={setShowProcessing}
+        onComplete={(success) => {
+          if (success) {
+            onStatusChange("success", "Audit completed successfully");
+            toast.success("Audit Complete", { description: `Report saved to ${outputPath}` });
+          } else {
+            onStatusChange("error", "Audit failed");
+            toast.error("Audit Failed", { description: "An error occurred during processing." });
+          }
+        }}
+        title="Generating Audit Report"
+      />
     </div>
   );
 }
