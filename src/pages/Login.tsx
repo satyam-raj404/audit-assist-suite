@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
-import { ParticleBackground } from "@/components/particles/ParticleBackground";
+
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -49,10 +49,8 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center p-4 relative overflow-hidden">
-      <ParticleBackground />
-
-      <div className="w-full max-w-md space-y-6 relative z-10">
+    <div className="min-h-screen bg-background flex items-center justify-center p-4">
+      <div className="w-full max-w-md space-y-6">
         {/* Logo / Branding */}
         <div className="flex flex-col items-center gap-3">
           <div className="w-14 h-14 bg-primary rounded-lg flex items-center justify-center shadow-lg">
