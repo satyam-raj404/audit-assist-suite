@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.database import engine, Base
-from app.routers import files, audit, reconciliation
+from app.routers import files, audit, reconciliation, auth
 
 # Create tables
 Base.metadata.create_all(bind=engine)
@@ -21,7 +21,7 @@ app.add_middleware(
 app.include_router(files.router)
 app.include_router(audit.router)
 app.include_router(reconciliation.router)
-
+app.include_router(auth.router)
 
 @app.get("/api/health")
 async def health_check():
