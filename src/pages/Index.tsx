@@ -4,6 +4,7 @@ import { Sidebar } from "@/components/layout/Sidebar";
 import { StatusBar } from "@/components/layout/StatusBar";
 import { AuditPanel } from "@/components/audit/AuditPanel";
 import { ReconciliationPanel } from "@/components/reconciliation/ReconciliationPanel";
+import { TemplateRequestPanel } from "@/components/templates/TemplateRequestPanel";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 
@@ -11,7 +12,7 @@ type AppStatus = "idle" | "running" | "success" | "error";
 
 const viewTitles: Record<string, { title: string; description: string }> = {
   dashboard: {
-    title: "Dashboard and Report Automation",
+    title: "Report Automation",
     description: "Upload documents, configure audit parameters, and generate automated reports",
   },
   reconciliation: {
@@ -23,8 +24,8 @@ const viewTitles: Record<string, { title: string; description: string }> = {
     description: "Upload documents for processing",
   },
   templates: {
-    title: "Report Templates",
-    description: "Manage and configure report templates",
+    title: "Template Request",
+    description: "Submit a new template for review and approval",
   },
   output: {
     title: "Output Files",
@@ -109,7 +110,7 @@ const Index = () => {
                 <div className="p-6 text-muted-foreground">Upload section coming soon...</div>
               )}
               {activeView === "templates" && (
-                <div className="p-6 text-muted-foreground">Templates section coming soon...</div>
+                <TemplateRequestPanel />
               )}
               {activeView === "output" && (
                 <div className="p-6 text-muted-foreground">Output files section coming soon...</div>

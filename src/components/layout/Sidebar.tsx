@@ -15,10 +15,10 @@ interface SidebarItem {
 }
 
 const sidebarItems: SidebarItem[] = [
-  { icon: LayoutDashboard, label: "Dashboard", id: "dashboard" },
+  { icon: LayoutDashboard, label: "Report Automation", id: "dashboard" },
   { icon: Upload, label: "Upload Files", id: "upload" },
   { icon: ArrowLeftRight, label: "Reconciliation", id: "reconciliation", requiresFS: true },
-  { icon: FileText, label: "Templates", id: "templates" },
+  { icon: FileText, label: "Template Request", id: "templates" },
   { icon: FolderOpen, label: "Output Files", id: "output" },
 ];
 
