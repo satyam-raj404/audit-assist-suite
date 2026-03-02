@@ -7,6 +7,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Checkbox } from "@/components/ui/checkbox";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
+import { api } from "@/lib/api";
 
 const Login = () => {
   const [activeTab, setActiveTab] = useState("login");
@@ -41,16 +42,17 @@ const Login = () => {
     setIsLoading(true);
 
     try {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      const user = await api.login(email, password);
+      localStorage.setItem("user", JSON.stringify(user));
       toast({
         title: "Login Successful",
         description: "Welcome back!",
       });
       navigate("/onboarding");
-    } catch {
+    } catch (err: any) {
       toast({
         title: "Login Failed",
-        description: "Invalid email or password. Please try again.",
+        description: err.message || "Invalid email or password. Please try again.",
         variant: "destructive",
       });
     } finally {
@@ -91,7 +93,7 @@ const Login = () => {
     setIsLoading(true);
 
     try {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      await api.register(regName, regEmail, regPassword);
       toast({
         title: "Account Created",
         description: "Your account has been created successfully. Please sign in.",
@@ -102,10 +104,10 @@ const Login = () => {
       setRegEmail("");
       setRegPassword("");
       setRegConfirmPassword("");
-    } catch {
+    } catch (err: any) {
       toast({
         title: "Registration Failed",
-        description: "Could not create account. Please try again.",
+        description: err.message || "Could not create account. Please try again.",
         variant: "destructive",
       });
     } finally {
