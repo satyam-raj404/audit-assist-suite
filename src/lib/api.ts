@@ -1,6 +1,4 @@
 // API client for communicating with FastAPI backend
-// Update API_BASE_URL to point to your running FastAPI server
-
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8000";
 
 async function request<T>(endpoint: string, options?: RequestInit): Promise<T> {
@@ -22,12 +20,13 @@ async function request<T>(endpoint: string, options?: RequestInit): Promise<T> {
 
 // ---- Types ----
 
-export interface AuditRequest {
+export interface PPTAutomationRequest {
   audit_type: string;
   sub_audit_sector: string;
   template_id: string;
   output_path: string;
   file_ids: string[];
+  user_id?: string;
 }
 
 export interface AuditResult {
@@ -41,6 +40,7 @@ export interface AuditResult {
 export interface ReconciliationRequest {
   source_file_id: string;
   target_file_id: string;
+  user_id?: string;
 }
 
 export interface ReconciliationResult {
@@ -57,6 +57,43 @@ export interface UploadedFileResponse {
   name: string;
   size: number;
   type: string;
+}
+
+export interface UserProfile {
+  user_id: string;
+  team_name: string;
+  partner_name: string;
+  client_name: string;
+  sector: string;
+  employee_id: string;
+}
+
+export interface UserProfileResponse extends UserProfile {
+  id: string;
+  created_at: string;
+}
+
+export interface AuthUser {
+  id: string;
+  name: string;
+  email: string;
+}
+
+export interface ErrorLogEntry {
+  user_id?: string;
+  module: string;
+  error_message: string;
+  stack_trace?: string;
+}
+
+export interface UserLogEntry {
+  id: string;
+  user_id?: string;
+  action: string;
+  module: string;
+  run_id?: string;
+  details?: string;
+  created_at: string;
 }
 
 // ---- API Functions ----
@@ -84,20 +121,20 @@ export const api = {
     await request(`/api/files/${fileId}`, { method: "DELETE" });
   },
 
-  // Audit
-  async startAudit(data: AuditRequest): Promise<AuditResult> {
-    return request("/api/audit/start", {
+  // PPT Automation
+  async startAudit(data: PPTAutomationRequest): Promise<AuditResult> {
+    return request("/api/ppt/start", {
       method: "POST",
       body: JSON.stringify(data),
     });
   },
 
   async getAuditStatus(auditId: string): Promise<AuditResult> {
-    return request(`/api/audit/${auditId}/status`);
+    return request(`/api/ppt/${auditId}/status`);
   },
 
   async cancelAudit(auditId: string): Promise<void> {
-    await request(`/api/audit/${auditId}/cancel`, { method: "POST" });
+    await request(`/api/ppt/${auditId}/cancel`, { method: "POST" });
   },
 
   // Reconciliation
@@ -116,6 +153,67 @@ export const api = {
     const res = await fetch(`${API_BASE_URL}/api/reconciliation/${reconciliationId}/export`);
     if (!res.ok) throw new Error("Export failed");
     return res.blob();
+  },
+
+  // Auth
+  async login(email: string, password: string): Promise<AuthUser> {
+    return request("/api/auth/login", {
+      method: "POST",
+      body: JSON.stringify({ email, password }),
+    });
+  },
+
+  async register(name: string, email: string, password: string): Promise<AuthUser> {
+    return request("/api/auth/register", {
+      method: "POST",
+      body: JSON.stringify({ name, email, password }),
+    });
+  },
+
+  // User Profile (Onboarding)
+  async saveUserProfile(profile: UserProfile): Promise<UserProfileResponse> {
+    return request("/api/users/profile", {
+      method: "POST",
+      body: JSON.stringify(profile),
+    });
+  },
+
+  async getUserProfile(userId: string): Promise<UserProfileResponse> {
+    return request(`/api/users/profile/${userId}`);
+  },
+
+  // Template Requests
+  async submitTemplateRequest(file: File, spocEmail: string, teamWide: boolean, userId?: string): Promise<unknown> {
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("spoc_email", spocEmail);
+    formData.append("team_wide", String(teamWide));
+    if (userId) formData.append("user_id", userId);
+
+    const res = await fetch(`${API_BASE_URL}/api/templates/request`, {
+      method: "POST",
+      body: formData,
+    });
+
+    if (!res.ok) {
+      const error = await res.json().catch(() => ({ detail: res.statusText }));
+      throw new Error(error.detail || "Template request failed");
+    }
+
+    return res.json();
+  },
+
+  // Error Logging
+  async logError(entry: ErrorLogEntry): Promise<void> {
+    await request("/api/errors/log", {
+      method: "POST",
+      body: JSON.stringify(entry),
+    });
+  },
+
+  // User Logs
+  async getUserLogs(userId: string): Promise<UserLogEntry[]> {
+    return request(`/api/logs/${userId}`);
   },
 
   // Health check

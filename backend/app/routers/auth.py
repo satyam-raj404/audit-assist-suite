@@ -1,7 +1,8 @@
+import uuid
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
+from sqlalchemy import text
 from app.database import get_db
-from app.models import User
 from app.schemas import RegisterRequest, RegisterResponse, LoginRequest, LoginResponse
 from passlib.context import CryptContext
 
@@ -20,33 +21,44 @@ def verify_password(plain: str, hashed: str) -> bool:
 
 @router.post("/register", response_model=RegisterResponse, status_code=status.HTTP_201_CREATED)
 async def register(data: RegisterRequest, db: Session = Depends(get_db)):
-    # Check if email already exists
-    existing = db.query(User).filter(User.email == data.email).first()
-    if existing:
+    # Check if email already exists using raw SQL
+    result = db.execute(
+        text("SELECT id FROM users WHERE email = :email"),
+        {"email": data.email},
+    ).fetchone()
+
+    if result:
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
             detail="An account with this email already exists.",
         )
 
-    user = User(
-        name=data.name,
-        email=data.email,
-        hashed_password=hash_password(data.password),
-    )
-    db.add(user)
-    db.commit()
-    db.refresh(user)
+    new_id = uuid.uuid4()
+    hashed = hash_password(data.password)
 
-    return RegisterResponse(id=user.id, name=user.name, email=user.email)
+    db.execute(
+        text(
+            "INSERT INTO users (id, name, email, hashed_password, created_at) "
+            "VALUES (:id, :name, :email, :hashed_password, NOW())"
+        ),
+        {"id": new_id, "name": data.name, "email": data.email, "hashed_password": hashed},
+    )
+    db.commit()
+
+    return RegisterResponse(id=new_id, name=data.name, email=data.email)
 
 
 @router.post("/login", response_model=LoginResponse)
 async def login(data: LoginRequest, db: Session = Depends(get_db)):
-    user = db.query(User).filter(User.email == data.email).first()
-    if not user or not verify_password(data.password, user.hashed_password):
+    row = db.execute(
+        text("SELECT id, name, email, hashed_password FROM users WHERE email = :email"),
+        {"email": data.email},
+    ).fetchone()
+
+    if not row or not verify_password(data.password, row.hashed_password):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid email or password.",
         )
 
-    return LoginResponse(id=user.id, name=user.name, email=user.email)
+    return LoginResponse(id=row.id, name=row.name, email=row.email)

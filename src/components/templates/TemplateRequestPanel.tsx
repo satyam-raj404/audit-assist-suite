@@ -6,6 +6,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Upload, FileText, X, Send } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { api } from "@/lib/api";
 
 export function TemplateRequestPanel() {
   const [file, setFile] = useState<File | null>(null);
@@ -38,7 +39,10 @@ export function TemplateRequestPanel() {
 
     setIsSubmitting(true);
     try {
-      await new Promise((r) => setTimeout(r, 1200));
+      const stored = localStorage.getItem("user");
+      const user = stored ? JSON.parse(stored) : null;
+
+      await api.submitTemplateRequest(file, spocEmail, teamWide === "yes", user?.id);
       toast({ title: "Request Submitted", description: "Your template request has been sent successfully." });
       setFile(null);
       setSpocEmail("");

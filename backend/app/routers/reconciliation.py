@@ -1,27 +1,26 @@
 import uuid
+import time
+import random
+import io
+import csv
 from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks
 from fastapi.responses import StreamingResponse
 from sqlalchemy.orm import Session
 from app.database import get_db
 from app.models import ReconciliationRun
 from app.schemas import ReconciliationRequest, ReconciliationResponse
-import time
-import random
-import io
-import csv
 
 router = APIRouter(prefix="/api/reconciliation", tags=["reconciliation"])
 
 
 def run_reconciliation_task(recon_id: uuid.UUID, db_url: str):
-    """Background task that simulates reconciliation.
-    Replace with actual Excel comparison logic."""
+    """Background task that simulates reconciliation."""
     from sqlalchemy import create_engine
     from sqlalchemy.orm import sessionmaker
 
     engine = create_engine(db_url)
-    Session = sessionmaker(bind=engine)
-    db = Session()
+    Sess = sessionmaker(bind=engine)
+    db = Sess()
 
     try:
         recon = db.query(ReconciliationRun).filter(ReconciliationRun.id == recon_id).first()
@@ -42,6 +41,10 @@ def run_reconciliation_task(recon_id: uuid.UUID, db_url: str):
         recon.status = "complete"
         recon.progress = 100
         db.commit()
+
+        # Log activity
+        from app.routers.user_logs import log_activity
+        log_activity(db, str(recon.user_id) if recon.user_id else None, "reconciliation_complete", "reconciliation", str(recon.id), f"Matched: {recon.matched}, Mismatched: {recon.mismatched}, Missing: {recon.missing}")
     except Exception:
         recon.status = "error"
         db.commit()
@@ -58,10 +61,15 @@ async def start_reconciliation(
     recon = ReconciliationRun(
         source_file_id=uuid.UUID(data.source_file_id),
         target_file_id=uuid.UUID(data.target_file_id),
+        user_id=uuid.UUID(data.user_id) if data.user_id else None,
     )
     db.add(recon)
     db.commit()
     db.refresh(recon)
+
+    # Log activity
+    from app.routers.user_logs import log_activity
+    log_activity(db, data.user_id, "reconciliation_start", "reconciliation", str(recon.id), "Started reconciliation")
 
     from app.database import DATABASE_URL
     background_tasks.add_task(run_reconciliation_task, recon.id, DATABASE_URL)

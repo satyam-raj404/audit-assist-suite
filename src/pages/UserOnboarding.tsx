@@ -12,6 +12,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
+import { api } from "@/lib/api";
 
 export interface UserProfile {
   teamName: string;
@@ -52,7 +53,21 @@ const UserOnboarding = () => {
 
     setIsLoading(true);
     try {
-      await new Promise((r) => setTimeout(r, 600));
+      const stored = localStorage.getItem("user");
+      const user = stored ? JSON.parse(stored) : null;
+
+      if (user?.id) {
+        await api.saveUserProfile({
+          user_id: user.id,
+          team_name: form.teamName,
+          partner_name: form.partnerName,
+          client_name: form.clientName,
+          sector: form.sector,
+          employee_id: form.employeeId,
+        });
+      }
+
+      // Also keep in localStorage for quick access
       localStorage.setItem("userProfile", JSON.stringify(form));
       toast({ title: "Profile Saved", description: "Welcome aboard!" });
       navigate("/");
