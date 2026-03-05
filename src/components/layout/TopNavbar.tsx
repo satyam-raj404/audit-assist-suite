@@ -1,14 +1,8 @@
-import { useState } from "react";
-import { Bell, HelpCircle, User } from "lucide-react";
+import { HelpCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { UserDetailsDialog } from "./UserDetailsDialog";
 
 export function TopNavbar() {
-  const [showUser, setShowUser] = useState(false);
-
   return (
-    <>
-      <UserDetailsDialog open={showUser} onOpenChange={setShowUser} />
     <header className="h-14 bg-card border-b border-border flex items-center justify-between px-6 shrink-0">
       <div className="flex items-center gap-4">
         {/* KPMG Logo */}
@@ -31,30 +25,11 @@ export function TopNavbar() {
           variant="ghost"
           size="icon"
           className="text-muted-foreground hover:text-foreground"
-          aria-label="Notifications"
-        >
-          <Bell className="h-4 w-4" />
-        </Button>
-        <Button
-          variant="ghost"
-          size="icon"
-          className="text-muted-foreground hover:text-foreground"
           aria-label="Help"
         >
           <HelpCircle className="h-4 w-4" />
         </Button>
-        <div className="h-6 w-px bg-border ml-2" />
-        <Button
-          variant="ghost"
-          size="sm"
-          className="text-muted-foreground hover:text-foreground gap-2 ml-2"
-          onClick={() => setShowUser(true)}
-        >
-          <User className="h-4 w-4" />
-          <span className="text-sm">User</span>
-        </Button>
       </div>
     </header>
-    </>
   );
 }

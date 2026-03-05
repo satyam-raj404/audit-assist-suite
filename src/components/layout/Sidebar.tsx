@@ -5,6 +5,7 @@ import {
   FileText,
   FolderOpen,
   ArrowLeftRight,
+  User,
 } from "lucide-react";
 
 interface SidebarItem {
@@ -20,6 +21,7 @@ const sidebarItems: SidebarItem[] = [
   { icon: ArrowLeftRight, label: "Reconciliation", id: "reconciliation", requiresFS: true },
   { icon: FileText, label: "Template Request", id: "templates" },
   { icon: FolderOpen, label: "Output Files", id: "output" },
+  { icon: User, label: "User Details", id: "userdetails" },
 ];
 
 interface SidebarProps {

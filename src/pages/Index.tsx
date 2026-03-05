@@ -5,6 +5,7 @@ import { StatusBar } from "@/components/layout/StatusBar";
 import { AuditPanel } from "@/components/audit/AuditPanel";
 import { ReconciliationPanel } from "@/components/reconciliation/ReconciliationPanel";
 import { TemplateRequestPanel } from "@/components/templates/TemplateRequestPanel";
+import { UserDetailsSection } from "@/components/layout/UserDetailsSection";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 
@@ -26,6 +27,10 @@ const viewTitles: Record<string, { title: string; description: string }> = {
   templates: {
     title: "Template Request",
     description: "Submit a new template for review and approval",
+  },
+  userdetails: {
+    title: "User Details",
+    description: "View your profile information",
   },
   output: {
     title: "Output Files",
@@ -111,6 +116,9 @@ const Index = () => {
               )}
               {activeView === "templates" && (
                 <TemplateRequestPanel />
+              )}
+              {activeView === "userdetails" && (
+                <UserDetailsSection />
               )}
               {activeView === "output" && (
                 <div className="p-6 text-muted-foreground">Output files section coming soon...</div>
