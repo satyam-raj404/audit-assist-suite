@@ -17,7 +17,7 @@ const viewTitles: Record<string, { title: string; description: string }> = {
     description: "Upload documents, configure audit parameters, and generate automated reports",
   },
   reconciliation: {
-    title: "Data Reconciliation",
+    title: "FS Reconciliation",
     description: "Compare two Excel files to identify discrepancies and generate variance reports",
   },
   upload: {
