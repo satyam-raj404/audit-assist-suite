@@ -15,13 +15,16 @@ interface SidebarItem {
   requiresFS?: boolean;
 }
 
-const sidebarItems: SidebarItem[] = [
+const topItems: SidebarItem[] = [
+  { icon: User, label: "User Details", id: "userdetails" },
   { icon: LayoutDashboard, label: "Report Automation", id: "dashboard" },
   { icon: Upload, label: "Upload Files", id: "upload" },
-  { icon: ArrowLeftRight, label: "Reconciliation", id: "reconciliation", requiresFS: true },
   { icon: FileText, label: "Template Request", id: "templates" },
   { icon: FolderOpen, label: "Output Files", id: "output" },
-  { icon: User, label: "User Details", id: "userdetails" },
+];
+
+const bottomItems: SidebarItem[] = [
+  { icon: ArrowLeftRight, label: "FS Reconciliation", id: "reconciliation", requiresFS: true },
 ];
 
 interface SidebarProps {
