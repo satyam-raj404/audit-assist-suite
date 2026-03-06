@@ -41,9 +41,13 @@ CREATE TABLE IF NOT EXISTS uploaded_files (
 -- 4. Audit Runs (PPT Automation)
 CREATE TABLE IF NOT EXISTS audit_runs (
     id              UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    audit_type      VARCHAR(50) NOT NULL,
-    sub_audit_sector VARCHAR(50) NOT NULL,
-    template_id     VARCHAR(50) NOT NULL,
+    audit_type      VARCHAR(100) NOT NULL,
+    utility_type    VARCHAR(50),
+    report_type     VARCHAR(20),
+    excel_file_id   UUID,
+    pptx_file_id    UUID,
+    month           VARCHAR(20),
+    year            VARCHAR(10),
     output_path     TEXT NOT NULL,
     status          VARCHAR(20) DEFAULT 'pending',
     progress        FLOAT DEFAULT 0,
@@ -56,13 +60,16 @@ CREATE TABLE IF NOT EXISTS audit_runs (
 -- 5. Reconciliation Runs
 CREATE TABLE IF NOT EXISTS reconciliation_runs (
     id              UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    audit_type      VARCHAR(100),
     source_file_id  UUID NOT NULL,
-    target_file_id  UUID NOT NULL,
+    target_file_id  UUID,
+    output_path     TEXT,
     status          VARCHAR(20) DEFAULT 'pending',
     progress        FLOAT DEFAULT 0,
     matched         INTEGER DEFAULT 0,
     mismatched      INTEGER DEFAULT 0,
     missing         INTEGER DEFAULT 0,
+    report_path     TEXT,
     user_id         UUID,
     created_at      TIMESTAMP DEFAULT NOW(),
     updated_at      TIMESTAMP DEFAULT NOW()

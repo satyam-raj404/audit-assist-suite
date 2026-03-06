@@ -48,7 +48,7 @@ const Login = () => {
         title: "Login Successful",
         description: "Welcome back!",
       });
-      navigate("/onboarding");
+      navigate(localStorage.getItem("userProfile") ? "/" : "/onboarding");
     } catch (err: any) {
       toast({
         title: "Login Failed",

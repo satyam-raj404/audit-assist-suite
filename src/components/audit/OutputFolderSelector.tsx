@@ -1,6 +1,9 @@
-import { FolderOpen, ChevronRight } from "lucide-react";
+import { useState } from "react";
+import { FolderOpen, ChevronRight, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { api } from "@/lib/api";
+import { toast } from "sonner";
 
 interface OutputFolderSelectorProps {
   outputPath: string;
@@ -11,10 +14,22 @@ export function OutputFolderSelector({
   outputPath,
   onOutputPathChange,
 }: OutputFolderSelectorProps) {
-  const handleBrowse = () => {
-    // In a real app, this would open a folder picker dialog
-    // For this demo, we'll simulate with a predefined path
-    onOutputPathChange("C:\\KPMG\\AuditReports\\2024");
+  const [isBrowsing, setIsBrowsing] = useState(false);
+
+  const handleBrowse = async () => {
+    setIsBrowsing(true);
+    try {
+      const path = await api.browseFolder();
+      if (path) {
+        onOutputPathChange(path);
+      }
+    } catch {
+      toast.error("Could not open folder picker", {
+        description: "Make sure the backend server is running.",
+      });
+    } finally {
+      setIsBrowsing(false);
+    }
   };
 
   return (
@@ -27,18 +42,24 @@ export function OutputFolderSelector({
           <Input
             value={outputPath}
             onChange={(e) => onOutputPathChange(e.target.value)}
-            placeholder="Select output folder..."
+            placeholder="Select output folder or type path..."
             className="pl-10 bg-card"
           />
         </div>
-        <Button variant="kpmg-outline" onClick={handleBrowse}>
-          <span>Browse</span>
-          <ChevronRight className="h-4 w-4" />
+        <Button variant="kpmg-outline" onClick={handleBrowse} disabled={isBrowsing}>
+          {isBrowsing ? (
+            <Loader2 className="h-4 w-4 animate-spin" />
+          ) : (
+            <>
+              <span>Browse</span>
+              <ChevronRight className="h-4 w-4" />
+            </>
+          )}
         </Button>
       </div>
 
       <p className="text-xs text-muted-foreground">
-        Generated reports will be saved to this location with timestamp-based filenames.
+        Output files will be saved to this folder on the server.
       </p>
     </div>
   );
