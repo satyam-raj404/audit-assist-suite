@@ -22,3 +22,22 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.env
+venv/
+RU/
+
+# Backend uploads (user files, not code)
+backend/uploads/
+
+# Claude Code local config
+.claude/
+
+# Temp files
+_ts_tmp.js
+/tmp/
