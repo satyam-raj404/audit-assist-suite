@@ -19,15 +19,11 @@ class FileResponse(BaseModel):
 # ─── PPT Automation (replaces Audit) ───
 
 class PPTAutomationRequest(BaseModel):
-    audit_type: str                    # "Internal Audit", "Concurrent Audit", "ICOFR", etc.
-    utility_type: Optional[str] = None # "Report" or "Dashboard"
-    report_type: Optional[str] = None  # "Draft", "Final", "Both" (Concurrent Audit + Report only)
-    excel_file_id: str                 # uploaded issue tracker file ID
-    pptx_file_id: Optional[str] = None # uploaded template file ID (legacy upload)
-    pptx_path: Optional[str] = None   # pre-stored template path (used when selecting from registry)
-    month: Optional[str] = None        # "March" etc. (Concurrent Audit + Report only)
-    year: Optional[str] = None         # "2025" etc.
+    audit_type: str
+    sub_audit_sector: str
+    template_id: str
     output_path: str
+    file_ids: List[str]
     user_id: Optional[str] = None
 
 
@@ -51,10 +47,8 @@ class PPTAutomationResponse(BaseModel):
 # ─── Reconciliation ───
 
 class ReconciliationRequest(BaseModel):
-    audit_type: str                          # "KYC", "FOBO", "Swift", etc.
-    source_file_id: str                      # always required
-    target_file_id: Optional[str] = None     # Swift only (second file)
-    output_path: str
+    source_file_id: str
+    target_file_id: str
     user_id: Optional[str] = None
 
 
@@ -65,7 +59,6 @@ class ReconciliationResponse(BaseModel):
     matched: int
     mismatched: int
     missing: int
-    report_path: Optional[str] = None
 
     class Config:
         from_attributes = True
