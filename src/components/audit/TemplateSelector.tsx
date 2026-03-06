@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { Eye, CheckCircle2, Presentation, AlertCircle, Loader2 } from "lucide-react";
+import { useState } from "react";
+import { Eye, FileText, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -7,186 +7,152 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-import { api, type PptTemplate } from "@/lib/api";
-import { toast } from "sonner";
 
-interface TemplateSelectorProps {
-  auditType: string;
-  utilityType: string;
-  selectedId: string;
-  selectedName: string;
-  onSelect: (id: string, name: string, path: string) => void;
+interface Template {
+  id: string;
+  name: string;
+  description: string;
+  sections: string[];
 }
 
+interface TemplateSelectorProps {
+  selectedTemplate: string;
+  onTemplateChange: (templateId: string) => void;
+}
+
+const templates: Template[] = [
+  {
+    id: "standard",
+    name: "Standard Audit Report",
+    description: "Comprehensive audit report following KPMG standards",
+    sections: ["Executive Summary", "Scope & Methodology", "Findings", "Recommendations", "Appendices"],
+  },
+  {
+    id: "executive",
+    name: "Executive Summary Only",
+    description: "High-level summary for senior management",
+    sections: ["Key Highlights", "Critical Findings", "Action Items"],
+  },
+  {
+    id: "detailed",
+    name: "Detailed Technical Report",
+    description: "In-depth technical analysis with supporting data",
+    sections: ["Technical Overview", "Data Analysis", "Risk Assessment", "Control Evaluation", "Detailed Findings", "Technical Recommendations"],
+  },
+  {
+    id: "regulatory",
+    name: "Regulatory Compliance Report",
+    description: "Format aligned with regulatory requirements",
+    sections: ["Compliance Overview", "Regulatory Mapping", "Gap Analysis", "Remediation Plan", "Evidence Documentation"],
+  },
+];
+
 export function TemplateSelector({
-  auditType,
-  utilityType,
-  selectedId,
-  onSelect,
+  selectedTemplate,
+  onTemplateChange,
 }: TemplateSelectorProps) {
-  const [templates, setTemplates] = useState<PptTemplate[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [previewTemplate, setPreviewTemplate] = useState<PptTemplate | null>(null);
-
-  const ready = Boolean(auditType && utilityType);
-
-  useEffect(() => {
-    if (!ready) {
-      setTemplates([]);
-      onSelect("", "", "");
-      return;
-    }
-    let cancelled = false;
-    setLoading(true);
-    api
-      .getTemplates(auditType, utilityType)
-      .then((data) => { if (!cancelled) setTemplates(data); })
-      .catch(() => { if (!cancelled) toast.error("Could not load templates"); })
-      .finally(() => { if (!cancelled) setLoading(false); });
-    return () => { cancelled = true; };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [auditType, utilityType]);
-
-  const handleSelect = (t: PptTemplate) => {
-    if (!t.available) {
-      toast.warning("Template file not found", {
-        description: "Place template.pptx in backend/templates for this audit type.",
-      });
-      return;
-    }
-    if (selectedId === t.id) {
-      onSelect("", "", "");
-    } else {
-      onSelect(t.id, t.name, t.path);
-    }
-  };
+  const [previewTemplate, setPreviewTemplate] = useState<Template | null>(null);
 
   return (
     <div className="space-y-4">
-      <h3 className="kpmg-section-title">Select PPT Template</h3>
+      <h3 className="kpmg-section-title">Select Template</h3>
 
-      {!ready ? (
-        <div className="flex items-center gap-3 p-4 rounded border border-dashed border-border text-muted-foreground text-sm">
-          <Presentation className="h-4 w-4 shrink-0" />
-          Select an audit type and utility type to see available templates
-        </div>
-      ) : loading ? (
-        <div className="flex items-center gap-3 p-4 rounded border border-dashed border-border text-muted-foreground text-sm">
-          <Loader2 className="h-4 w-4 shrink-0 animate-spin" />
-          Loading templates...
-        </div>
-      ) : templates.length === 0 ? (
-        <div className="flex items-center gap-3 p-4 rounded border border-dashed border-border text-muted-foreground text-sm">
-          <AlertCircle className="h-4 w-4 shrink-0" />
-          No templates found for this combination
-        </div>
-      ) : (
-        <div className="space-y-2">
-          {templates.map((t) => {
-            const isSelected = selectedId === t.id;
-            return (
+      <div className="grid grid-cols-2 gap-3">
+        {templates.map((template) => (
+          <div
+            key={template.id}
+            className={cn(
+              "relative p-4 rounded border-2 cursor-pointer transition-all",
+              "focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2",
+              selectedTemplate === template.id
+                ? "border-primary bg-primary/5"
+                : "border-border hover:border-muted-foreground/50"
+            )}
+            onClick={() => onTemplateChange(template.id)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                onTemplateChange(template.id);
+              }
+            }}
+            tabIndex={0}
+            role="button"
+            aria-pressed={selectedTemplate === template.id}
+          >
+            <div className="flex items-start gap-3">
               <div
-                key={t.id}
-                onClick={() => handleSelect(t)}
                 className={cn(
-                  "group flex items-center gap-3 p-3 rounded border cursor-pointer transition-colors",
-                  isSelected
-                    ? "border-primary bg-primary/5"
-                    : t.available
-                    ? "border-border bg-card hover:border-primary/50 hover:bg-primary/5"
-                    : "border-border bg-muted/30 opacity-60 cursor-not-allowed"
+                  "shrink-0 w-5 h-5 rounded-full border-2 flex items-center justify-center mt-0.5",
+                  selectedTemplate === template.id
+                    ? "border-primary bg-primary"
+                    : "border-muted-foreground/30"
                 )}
               >
-                <div
-                  className={cn(
-                    "shrink-0 rounded p-1.5",
-                    isSelected ? "bg-primary/10 text-primary" : "bg-muted text-muted-foreground"
-                  )}
-                >
-                  <Presentation className="h-4 w-4" />
-                </div>
-
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2">
-                    <p className="text-sm font-medium truncate">{t.name}</p>
-                    {!t.available && (
-                      <Badge variant="outline" className="text-xs text-destructive border-destructive/40 shrink-0">
-                        Missing
-                      </Badge>
-                    )}
-                  </div>
-                  <p className="text-xs text-muted-foreground line-clamp-1 mt-0.5">{t.description}</p>
-                </div>
-
-                <div className="flex items-center gap-1 shrink-0">
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="h-7 w-7 text-muted-foreground hover:text-foreground"
-                    onClick={(e) => { e.stopPropagation(); setPreviewTemplate(t); }}
-                    aria-label={"View details for " + t.name}
-                  >
-                    <Eye className="h-3.5 w-3.5" />
-                  </Button>
-                  {isSelected && <CheckCircle2 className="h-4 w-4 text-primary" />}
-                </div>
+                {selectedTemplate === template.id && (
+                  <Check className="h-3 w-3 text-primary-foreground" />
+                )}
               </div>
-            );
-          })}
-        </div>
-      )}
 
-      <Dialog open={!!previewTemplate} onOpenChange={(open) => { if (!open) setPreviewTemplate(null); }}>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2">
+                  <FileText className="h-4 w-4 text-primary shrink-0" />
+                  <span className="font-medium text-sm">{template.name}</span>
+                </div>
+                <p className="text-xs text-muted-foreground mt-1 line-clamp-2">
+                  {template.description}
+                </p>
+              </div>
+
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-7 w-7 shrink-0"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setPreviewTemplate(template);
+                }}
+                aria-label={`Preview ${template.name}`}
+              >
+                <Eye className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Preview Dialog */}
+      <Dialog open={!!previewTemplate} onOpenChange={() => setPreviewTemplate(null)}>
         <DialogContent className="max-w-md">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
-              <Presentation className="h-5 w-5 text-primary" />
+              <FileText className="h-5 w-5 text-primary" />
               {previewTemplate?.name}
             </DialogTitle>
           </DialogHeader>
-          {previewTemplate && (
-            <div className="space-y-4">
-              <div className="flex flex-wrap gap-2">
-                <Badge variant="secondary">{previewTemplate.audit_type}</Badge>
-                <Badge variant="outline">{previewTemplate.utility_type}</Badge>
-                {previewTemplate.available ? (
-                  <Badge className="bg-green-500/10 text-green-600 border-green-500/30">Template available</Badge>
-                ) : (
-                  <Badge className="bg-destructive/10 text-destructive border-destructive/30">File missing</Badge>
-                )}
-              </div>
 
-              <div className="space-y-1">
-                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Description</p>
-                <p className="text-sm text-foreground leading-relaxed">{previewTemplate.description}</p>
-              </div>
+          <div className="space-y-4 py-2">
+            <p className="text-sm text-muted-foreground">
+              {previewTemplate?.description}
+            </p>
 
-              <div className="space-y-1">
-                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Template path</p>
-                <p className="text-xs font-mono bg-muted rounded p-2 break-all text-muted-foreground">{previewTemplate.path}</p>
-              </div>
-
-              {!previewTemplate.available && (
-                <div className="flex items-start gap-2 p-3 rounded bg-destructive/5 border border-destructive/20 text-sm text-destructive">
-                  <AlertCircle className="h-4 w-4 shrink-0 mt-0.5" />
-                  <span>
-                    Place <code className="font-mono text-xs">template.pptx</code> in the path shown above.
-                  </span>
-                </div>
-              )}
-
-              <Button
-                className="w-full"
-                variant={selectedId === previewTemplate.id ? "outline" : "kpmg"}
-                disabled={!previewTemplate.available}
-                onClick={() => { handleSelect(previewTemplate); setPreviewTemplate(null); }}
-              >
-                {selectedId === previewTemplate.id ? "Deselect Template" : "Use This Template"}
-              </Button>
+            <div>
+              <h4 className="text-sm font-medium mb-2">Report Sections:</h4>
+              <ul className="space-y-1">
+                {previewTemplate?.sections.map((section, index) => (
+                  <li
+                    key={section}
+                    className="flex items-center gap-2 text-sm text-muted-foreground"
+                  >
+                    <span className="w-5 h-5 rounded bg-muted flex items-center justify-center text-xs font-medium">
+                      {index + 1}
+                    </span>
+                    {section}
+                  </li>
+                ))}
+              </ul>
             </div>
-          )}
+          </div>
         </DialogContent>
       </Dialog>
     </div>

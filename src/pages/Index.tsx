@@ -6,7 +6,6 @@ import { AuditPanel } from "@/components/audit/AuditPanel";
 import { ReconciliationPanel } from "@/components/reconciliation/ReconciliationPanel";
 import { TemplateRequestPanel } from "@/components/templates/TemplateRequestPanel";
 import { UserDetailsSection } from "@/components/layout/UserDetailsSection";
-import { HistoryPanel } from "@/components/history/HistoryPanel";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 
@@ -36,10 +35,6 @@ const viewTitles: Record<string, { title: string; description: string }> = {
   output: {
     title: "Output Files",
     description: "View and manage generated reports",
-  },
-  history: {
-    title: "History",
-    description: "View past runs and technical error logs",
   },
 };
 
@@ -127,9 +122,6 @@ const Index = () => {
               )}
               {activeView === "output" && (
                 <div className="p-6 text-muted-foreground">Output files section coming soon...</div>
-              )}
-              {activeView === "history" && (
-                <HistoryPanel />
               )}
             </div>
           </main>

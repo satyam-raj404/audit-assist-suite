@@ -6,7 +6,6 @@ import {
   FolderOpen,
   ArrowLeftRight,
   User,
-  History,
 } from "lucide-react";
 
 interface SidebarItem {
@@ -17,12 +16,11 @@ interface SidebarItem {
 }
 
 const topItems: SidebarItem[] = [
-  { icon: User,            label: "User Details",      id: "userdetails" },
+  { icon: User, label: "User Details", id: "userdetails" },
   { icon: LayoutDashboard, label: "Report Automation", id: "dashboard" },
-  { icon: Upload,          label: "Upload Files",      id: "upload" },
-  { icon: FileText,        label: "Template Request",  id: "templates" },
-  { icon: FolderOpen,      label: "Output Files",      id: "output" },
-  { icon: History,         label: "History",           id: "history" },
+  { icon: Upload, label: "Upload Files", id: "upload" },
+  { icon: FileText, label: "Template Request", id: "templates" },
+  { icon: FolderOpen, label: "Output Files", id: "output" },
 ];
 
 const bottomItems: SidebarItem[] = [
