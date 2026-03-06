@@ -1,0 +1,41 @@
+{
+    "Prompt" : ["I Don't want a quick response , Think deep before responding , take time but give me correct response" , "Act as a Python expert with 30 years of experience" , "Give the python Code to Automate PPT creation by populating" , "Ask Relevant questions if needed more clarity on the task - understand the context and Excel sheet structure provided in json" , "The Code Should be very simple , use more functions to simplify and should be filled with comments to explain the whole working simply" , "The Slides - 7 , 11 , 12 all will be duplicated on per row basis according to the excel data" ]
+    ,
+    "Context" : {"Context 1" : {"PPT" : {
+    "Slide 2" : [{"Placeholders" : ["{{a}}" , "{{b}}" , "{{c}}" , "{{d}}" , "{{e}}" , "{{f}}"]}] , 
+    "Slide 7" : [{"Placeholders" : ["{{Issue heading}}" , "{{SI No.}}" , "{{Observations}}" , "{{Recommendation}}"]} ,  {"Styling" : "Arial, size 12, black color"}] , 
+    "Slide 10" : [{"Instructions" : ["Add the Tables from Excel data Frame", "The Names of the table follow the naming convention ("Key Stats" , "Key Stats-1" , "Key Stats-2")" , "Create New Slides in case of Overflow" , "There are no text boxes or tables present so add them"]}
+                 , {"Names of Tables to be added in Slide 10 from the excel data frame" : ["Key Stats" , "Key Stats-1" , "Key Stats-2" , "Key Stats-3" , "Key Stats-4" , "Key Stats-5"]}
+                 , {"Styling" : ["Color scheme for tables as R(0), G(51), B(141) and light grey borders" , "table to have font Arial, font size 10.5"]}],
+    "Slide 11" : [{"Placeholders" : ["{{Issue Heading}}" , "{{Observations}}" , "{{Root cause}}"]} 
+                 , {"Styling" : "Arial, size 12, black color"}] ,
+    "Slide 12" : [{"Instructions" : ["Replace the placeholders from Excel data Frame" , "Each Row in the Dataframe creates a new slide and the data is populated in the ppt template" , "In case of overflow create a new slide"]} 
+                 , {"Placeholders" : ["{{Issue Heading}}" , "{{Potential Risk}}" , "{{Recommendation}}" , "{{Management Action Plan}}"]} 
+                 ,  {"Styling" : "Arial, size 12, black color"}] ,
+    "Slide 15" : [{"Instructions" : ["Add the Annextures from Excel data Frame", "The Names of the table in the excel dataframe follow the naming convention ("Annexure I.a" , "Annexure I.b" , "Annexure II.a" , "Annexure II.b", "Annexure III", "Annexure IV", "Annexure V")" , "Create New Slides in case of Overflow" , "There are no text boxes or tables present so add them"]}
+                 , {"Names of Annexture Table to be added in Slide 10 from the excel dataframe" : ["Annexure I.a" , "Annexure I.b" , "Annexure I.c" , "Annexure II.a" , "Annexure II.b" , "Annexure III", "Annexure IV", "Annexure V"]}
+                 , {"Styling" : ["Color scheme for tables as ( Red(0), Green(51), Blue(141) ) and light grey borders" , "table to have font Arial, font size 10.5"]}]
+    } , 
+    "Context 2" : ["The code needs to replace the placeholder in {{}} by the cell data corresponding to each column. (example - {{Observations}} placeholder will be replaced by the data in The column Observations )" , "All the data in the rows will be populated in the slides" , "We are currently using python pptx library" ]} , 
+    "Excel sheet structure" : {"Observation listing" : "This table contains the row wise data thats needed to populate the Slide number - (7 , 11 , 12)" , "Key Stats" : ["For Slide 10"] , "Key Stats-1" : ["For Slide 10"] , "Key Stats-2" : ["For Slide 10"] , "Key Stats-3" : ["For Slide 10"] , "Key Stats-4" : ["For Slide 10"] , "Key Stats-5" : ["For Slide 10"] , "Annexure I.a" : ["For Slide 15"] , "Annexure I.b" : ["For Slide 15"] , "Annexure I.c" : ["For Slide 15"] , "Annexure II.a" : ["For Slide 15"] , "Annexure II.b" : ["For Slide 15"] , "Annexure III" : ["For Slide 15"] , "Annexure IV" : ["For Slide 15"] , "Annexure V" : ["For Slide 15"] }
+    , "PPT Structure based on indices" : ["0 - Zensar Technologies Limited ,
+1 - Contents ,
+2 - Distribution List & Audit Team , 
+3 - Audit Scope , 
+4 - Scope of Work (Review Period: October 2024 to August 2025) , 
+5 - List of Observations , 
+6 - Executive Summary , 
+7 - {{Issue heading}}( {{Sl No.}} /2) , 
+8 - Overview and Key Information , 
+9 - Overview and Key Information , 
+10 - Detailed Observations , 
+11 - {{Issue heading}} , 
+12 - {{Issue Heading}} , 
+13 - Annexures , 
+14 - {{Annexure-Title}} , 
+15 - How to Interpret The Report? , 
+16 - Disclaimer , 
+17 - Thank you"]}
+}
+
+

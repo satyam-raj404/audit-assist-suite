@@ -1,0 +1,8 @@
+# Ignore venv internals only — track the actual automation scripts
+Lib/
+Scripts/
+Include/
+pyvenv.cfg
+__pycache__/
+**/__pycache__/
+*.pyc

@@ -41,3 +41,10 @@ backend/uploads/
 # Temp files
 _ts_tmp.js
 /tmp/
+
+# Automation scripts venv (70MB, not code)
+backend/Report Utility Automation Scripts/Lib/
+backend/Report Utility Automation Scripts/Scripts/
+backend/Report Utility Automation Scripts/Include/
+backend/Report Utility Automation Scripts/__pycache__/
+backend/Report Utility Automation Scripts/**/__pycache__/
