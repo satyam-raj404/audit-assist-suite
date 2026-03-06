@@ -22,6 +22,9 @@ npm run dev
 # Production build
 npm run build
 
+# Preview production build locally
+npm run preview
+
 # Lint
 npm run lint
 ```
@@ -65,8 +68,10 @@ psql -U postgres -d kpmg_audit -f backend/database_schema.sql
 - `dashboard` → `AuditPanel` (PPT/report automation)
 - `reconciliation` → `ReconciliationPanel` (Excel file comparison)
 - `templates` → `TemplateRequestPanel`
+- `userdetails` → `UserDetailsSection`
+- `upload`, `output` → stubs (not yet implemented)
 
-A global FS/Non-FS toggle in the header affects which sidebar views are available.
+An FS/Non-FS toggle lives in the content area header (not `TopNavbar`). When Non-FS is active, `reconciliation` is hidden and `activeView` resets to `dashboard`.
 
 **API client** (`src/lib/api.ts`): Single `api` object with typed functions for all backend endpoints. Uses `VITE_API_BASE_URL` env var (defaults to `http://localhost:8000`). All file uploads use `FormData`; all other requests use JSON.
 
@@ -74,8 +79,13 @@ A global FS/Non-FS toggle in the header affects which sidebar views are availabl
 - `audit/` — file upload, audit type/template selectors, progress display
 - `reconciliation/` — two-file slot upload, results display
 - `templates/` — template request form
-- `layout/` — TopNavbar, Sidebar, StatusBar, UserDetailsDialog
+- `layout/` — TopNavbar, Sidebar, StatusBar, UserDetailsSection
+- `shared/` — cross-feature components (e.g. `ProcessingDialog`)
 - `ui/` — shadcn/ui primitives (do not modify these)
+
+**Import alias**: `@/` maps to `src/` (configured in `tsconfig.json` and `vite.config.ts`).
+
+**Key libraries**: `@tanstack/react-query` for server state; `react-hook-form` + `zod` for form validation; `sonner` for toast notifications; `recharts` for charts.
 
 ### Backend (`backend/app/`)
 
@@ -98,6 +108,12 @@ A global FS/Non-FS toggle in the header affects which sidebar views are availabl
 **Schemas** (`schemas.py`): Pydantic v2 models mirroring each table with `Create` and `Response` variants.
 
 **Database** (`database.py`): Standard SQLAlchemy session factory. `get_db()` is a FastAPI dependency injected into router handlers. Connection URL from `DATABASE_URL` env var.
+
+`Base.metadata.create_all(bind=engine)` in `main.py` auto-creates all tables on startup — Alembic migrations are an alternative, not a prerequisite.
+
+**Note**: `auth.py` intentionally uses raw SQL (`db.execute(text(...))`) instead of the ORM for user queries.
+
+**No test suite** currently exists for frontend or backend.
 
 ### Environment Variables
 

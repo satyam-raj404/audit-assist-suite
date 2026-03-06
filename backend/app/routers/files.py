@@ -1,5 +1,6 @@
 import os
 import uuid
+import asyncio
 from fastapi import APIRouter, UploadFile, File, Depends, HTTPException
 from sqlalchemy.orm import Session
 from app.database import get_db
@@ -33,6 +34,23 @@ async def upload_file(file: UploadFile = File(...), db: Session = Depends(get_db
     db.refresh(db_file)
 
     return db_file
+
+
+@router.get("/browse-folder")
+async def browse_folder():
+    """Open a native Windows folder picker dialog on the server machine and return the selected path."""
+    def _pick() -> str:
+        from tkinter import Tk, filedialog
+        root = Tk()
+        root.withdraw()
+        root.attributes("-topmost", True)
+        path = filedialog.askdirectory(title="Select Output Folder")
+        root.destroy()
+        return path or ""
+
+    loop = asyncio.get_running_loop()
+    path = await loop.run_in_executor(None, _pick)
+    return {"path": path}
 
 
 @router.delete("/{file_id}")

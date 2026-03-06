@@ -20,12 +20,26 @@ async function request<T>(endpoint: string, options?: RequestInit): Promise<T> {
 
 // ---- Types ----
 
+export interface PptTemplate {
+  id: string;
+  name: string;
+  description: string;
+  audit_type: string;
+  utility_type: string;
+  path: string;
+  available: boolean;
+}
+
 export interface PPTAutomationRequest {
   audit_type: string;
-  sub_audit_sector: string;
-  template_id: string;
+  utility_type?: string;
+  report_type?: string;
+  excel_file_id: string;
+  pptx_file_id?: string;
+  pptx_path?: string;
+  month?: string;
+  year?: string;
   output_path: string;
-  file_ids: string[];
   user_id?: string;
 }
 
@@ -38,8 +52,10 @@ export interface AuditResult {
 }
 
 export interface ReconciliationRequest {
+  audit_type: string;
   source_file_id: string;
-  target_file_id: string;
+  target_file_id?: string;
+  output_path: string;
   user_id?: string;
 }
 
@@ -50,6 +66,7 @@ export interface ReconciliationResult {
   matched: number;
   mismatched: number;
   missing: number;
+  report_path?: string;
 }
 
 export interface UploadedFileResponse {
@@ -84,6 +101,15 @@ export interface ErrorLogEntry {
   module: string;
   error_message: string;
   stack_trace?: string;
+}
+
+export interface ErrorLogResponse {
+  id: string;
+  user_id?: string;
+  module: string;
+  error_message: string;
+  stack_trace?: string;
+  created_at: string;
 }
 
 export interface UserLogEntry {
@@ -131,6 +157,11 @@ export const api = {
 
   async getAuditStatus(auditId: string): Promise<AuditResult> {
     return request(`/api/ppt/${auditId}/status`);
+  },
+
+  async getTemplates(auditType: string, utilityType: string): Promise<PptTemplate[]> {
+    const params = new URLSearchParams({ audit_type: auditType, utility_type: utilityType });
+    return request(`/api/ppt-templates?${params}`);
   },
 
   async cancelAudit(auditId: string): Promise<void> {
@@ -214,6 +245,17 @@ export const api = {
   // User Logs
   async getUserLogs(userId: string): Promise<UserLogEntry[]> {
     return request(`/api/logs/${userId}`);
+  },
+
+  // Error Logs
+  async getErrorLogs(limit = 50): Promise<ErrorLogResponse[]> {
+    return request(`/api/errors?limit=${limit}`);
+  },
+
+  // Folder browser (opens native OS dialog on the server machine)
+  async browseFolder(): Promise<string> {
+    const res = await request<{ path: string }>("/api/files/browse-folder");
+    return res.path;
   },
 
   // Health check
